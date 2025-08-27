@@ -1,6 +1,13 @@
 const express = require('express');
 const app = express();
+const cors = require("cors");
 const port = process.env.PORT || 3000;
+
+app.use(cors({
+    origin: "http://localhost:5173",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -35,7 +42,11 @@ app.post("/shorten", (req, res) => {
     const shortenedUrl = `${baseUrl}/${shortCode}`;
     console.log(`Shortened URL: <a href="${shortCode}" target="_blank">${shortenedUrl}</a>`);
 
-    res.send(`Shortened URL: <a href="${shortCode}" target="_blank">${shortenedUrl}</a>`);
+    res.status(200).json({
+        message: "URL shortened successfully",
+        shortCode,
+        shortenedUrl
+    });
 });
 
 app.get("/:shortCode", (req, res) => {
